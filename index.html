@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MeshyAI Photobooth</title>
+
+<!-- Open Graph for link previews -->
+<meta property="og:title" content="My MeshyAI Photo">
+<meta property="og:description" content="Made with MeshyAI at GDC 2026">
+<meta property="og:image" id="og-image" content="">
+<meta property="og:type" content="website">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 30% 80%, #1a3a1a 0%, #0d2020 40%, #050d0d 70%, #000 100%);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px 40px;
+  overflow-x: hidden;
+}
+
+/* Logo */
+.logo {
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+.logo img {
+  height: 22px;
+  width: auto;
+}
+
+/* Photo */
+.photo-wrap {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid rgba(160,230,100,0.35);
+  box-shadow: 0 0 40px rgba(80,200,80,0.12), 0 8px 32px rgba(0,0,0,0.6);
+  margin-bottom: 18px;
+  background: #111;
+}
+.photo-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 9/16;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 0.85rem;
+}
+
+/* Download button */
+.btn-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #8adf3c;
+  color: #0a1a00;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  margin-bottom: 14px;
+  transition: opacity 0.15s;
+}
+.btn-download:active { opacity: 0.8; }
+.btn-download svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* Caption copy box */
+.caption-box {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px 16px 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 0.2s;
+}
+.caption-box:active, .caption-box.copied {
+  border-color: rgba(138,223,60,0.5);
+}
+.caption-text {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #ddd;
+  margin-bottom: 10px;
+  user-select: none;
+}
+.copy-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8adf3c;
+  text-align: center;
+  display: block;
+  transition: opacity 0.2s;
+}
+.caption-box.copied .copy-label::after { content: ' ✓'; }
+
+/* Share CTA */
+.share-cta {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #8adf3c;
+  padding: 0 8px;
+}
+.share-cta .highlight {
+  color: #fff;
+}
+
+/* Error state */
+.error-msg {
+  color: #888;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<div class="logo">
+  <img src="assets/logo-Meshy.png" alt="Meshy">
+</div>
+
+<div class="photo-wrap" id="photoWrap">
+  <div class="photo-placeholder" id="photoPlaceholder">Loading photo...</div>
+  <img id="photoImg" src="" alt="Your Meshy photo" style="display:none">
+</div>
+
+<button class="btn-download" id="downloadBtn" onclick="downloadPhoto()">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Photo
+</button>
+
+<div class="caption-box" id="captionBox" onclick="copyCaption()">
+  <div class="caption-text" id="captionText"></div>
+  <span class="copy-label" id="copyLabel">Click to copy text</span>
+</div>
+
+<div class="share-cta">
+  Share on <span class="highlight">X / Instagram / LinkedIn</span><br>
+  with <span class="highlight">#MeshyGDC2026 @MeshyAI</span><br>
+  to win our special gift 🎁
+</div>
+
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var photoUrl  = params.get('photo')  || '';
+  var maskName  = params.get('mask')   || 'AI Mask';
+  var caption   = params.get('caption') || ('I just unlocked ' + maskName + ' \uD83C\uDF89 with @MeshyAI at GDC 2026! #MeshyGDC2026 #MeshyAI');
+
+  // Set OG image
+  document.getElementById('og-image').setAttribute('content', photoUrl);
+
+  // Photo
+  if (photoUrl) {
+    var img = document.getElementById('photoImg');
+    img.src = photoUrl;
+    img.style.display = 'block';
+    document.getElementById('photoPlaceholder').style.display = 'none';
+  } else {
+    document.getElementById('photoPlaceholder').textContent = 'No photo found.';
+  }
+
+  // Caption
+  document.getElementById('captionText').textContent = caption;
+
+  // Download
+  window._photoUrl = photoUrl;
+  window._caption  = caption;
+})();
+
+async function downloadPhoto() {
+  var url = window._photoUrl;
+  if (!url) return;
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (isIOS) {
+    window.open(url, '_blank');
+    return;
+  }
+  try {
+    var resp = await fetch(url);
+    var blob = await resp.blob();
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'meshy_photo.png';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } catch(e) {
+    window.open(url, '_blank');
+  }
+}
+
+function copyCaption() {
+  var text = window._caption;
+  var box  = document.getElementById('captionBox');
+  var label = document.getElementById('copyLabel');
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+  } catch(e) {}
+  box.classList.add('copied');
+  label.textContent = 'Copied!';
+  setTimeout(function(){
+    box.classList.remove('copied');
+    label.textContent = 'Click to copy text';
+  }, 2000);
+}
+</script>
+</body>
+</html>
