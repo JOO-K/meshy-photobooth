@@ -63,30 +63,16 @@ body {
   font-size: 0.85rem;
 }
 
-/* Download button */
-.btn-download {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  max-width: 360px;
-  padding: 16px;
-  border-radius: 14px;
-  background: #8adf3c;
-  color: #0a1a00;
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+/* Hold to save hint */
+.save-hint {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  border: none;
-  cursor: pointer;
-  touch-action: manipulation;
+  color: rgba(138,223,60,0.7);
+  text-align: center;
   margin-bottom: 14px;
-  transition: opacity 0.15s;
 }
-.btn-download:active { opacity: 0.8; }
-.btn-download svg { width: 20px; height: 20px; flex-shrink: 0; }
 
 /* Caption copy box */
 .caption-box {
@@ -158,10 +144,7 @@ body {
   <img id="photoImg" src="" alt="Your Meshy photo" style="display:none">
 </div>
 
-<button class="btn-download" id="downloadBtn" onclick="downloadPhoto()">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-  Download Photo
-</button>
+<div class="save-hint">Hold photo to save!</div>
 
 <div class="caption-box" id="captionBox" onclick="copyCaption()">
   <div class="caption-text" id="captionText"></div>
