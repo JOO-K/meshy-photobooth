@@ -12,211 +12,163 @@
 <meta property="og:type" content="website">
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
   min-height: 100vh;
-  background: radial-gradient(ellipse at 30% 80%, #1a3a1a 0%, #0d2020 40%, #050d0d 70%, #000 100%);
+  background: radial-gradient(ellipse at 50% 20%, #1e3d20 0%, #0e1f10 45%, #080f09 100%);
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  padding-bottom: 32px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
-  padding: 16px 20px 20px;
-  overflow-y: auto;
+  gap: 8px;
+  padding: 14px 16px 6px;
 }
+.header img.icon { height: 30px; width: auto; }
+.header img.logo { height: 22px; width: auto; }
 
-/* Logo */
-.logo {
-  margin-bottom: 10px;
-  align-self: flex-start;
-  flex-shrink: 0;
-}
-.logo img {
-  height: 18px;
-  width: auto;
-}
-
-/* Photo */
+/* ── Photo ── */
 .photo-wrap {
-  flex-shrink: 1;
-  min-height: 0;
-  width: 100%;
-  max-width: 260px;
-  max-height: 48vh;
-  border: 1.5px solid rgba(160,230,100,0.35);
-  box-shadow: 0 0 30px rgba(80,200,80,0.12), 0 6px 24px rgba(0,0,0,0.6);
-  margin-bottom: 10px;
+  padding: 10px 16px 0;
 }
 .photo-wrap img {
-  max-width: 100%;
-  max-height: 48vh;
-  width: auto;
+  width: 100%;
   height: auto;
   display: block;
-  margin: 0 auto;
+  border-radius: 14px;
+  background: #111;
 }
 .photo-placeholder {
   width: 100%;
   aspect-ratio: 9/16;
   background: #111;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  color: #444;
   font-size: 0.85rem;
 }
 
-/* Hold to save hint */
-.save-hint {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(138,223,60,0.7);
-  text-align: center;
-  margin-bottom: 10px;
-  flex-shrink: 0;
+/* ── Steps ── */
+.steps {
+  padding: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* Caption copy box */
-.caption-box {
-  width: 100%;
-  max-width: 360px;
-  background: rgba(255,255,255,0.05);
-  border: 1.5px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 10px 14px 8px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: border-color 0.2s;
-  flex-shrink: 0;
-}
-.caption-box:active, .caption-box.copied {
-  border-color: rgba(138,223,60,0.5);
-}
-.caption-text {
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: #ddd;
-  margin-bottom: 6px;
-  user-select: none;
-}
-.copy-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #8adf3c;
+.step-hold {
   text-align: center;
-  display: block;
-  transition: opacity 0.2s;
-}
-.caption-box.copied .copy-label::after { content: ' ✓'; }
-
-/* Share CTA */
-.share-cta {
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-  font-size: 0.88rem;
-  font-weight: 700;
-  line-height: 1.45;
-  color: #8adf3c;
-  padding: 0 8px;
-  flex-shrink: 0;
-}
-.share-cta .highlight {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   color: #fff;
 }
 
-/* Error state */
-.error-msg {
-  color: #888;
-  font-size: 0.85rem;
-  text-align: center;
-  margin-top: 40px;
+/* ── Copy box ── */
+.caption-box {
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.13);
+  border-radius: 18px;
+  padding: 16px 18px 14px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: background 0.15s, border-color 0.2s;
 }
+.caption-box:active { background: rgba(255,255,255,0.12); }
+.caption-box.copied { border-color: rgba(138,223,60,0.5); }
+
+.caption-text {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+.copy-label {
+  display: block;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #c8f565;
+  letter-spacing: 0.4px;
+}
+
+/* ── Share CTA ── */
+.share-cta {
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #ddd;
+}
+.share-cta strong { color: #fff; font-weight: 700; }
+.share-cta .tag { font-weight: 800; font-style: italic; color: #c8f565; }
 </style>
 </head>
 <body>
 
-<div class="logo">
-  <img src="assets/logo-Meshy.png" alt="Meshy">
+<div class="header">
+  <img class="icon" src="assets/Meshy_Icon.png" alt=""
+       onerror="this.style.display='none'">
+  <img class="logo" src="assets/logo-Meshy.png" alt="Meshy">
 </div>
 
-<div class="photo-wrap" id="photoWrap">
-  <div class="photo-placeholder" id="photoPlaceholder">Loading photo...</div>
+<div class="photo-wrap">
+  <div class="photo-placeholder" id="photoPlaceholder">No photo found.</div>
   <img id="photoImg" src="" alt="Your Meshy photo" style="display:none">
 </div>
 
-<div class="save-hint">Hold photo to save!</div>
+<div class="steps">
 
-<div class="caption-box" id="captionBox" onclick="copyCaption()">
-  <div class="caption-text" id="captionText"></div>
-  <span class="copy-label" id="copyLabel">Click to copy text</span>
-</div>
+  <p class="step-hold">1&#xFE0F;&#x20E3; HOLD PHOTO TO SAVE</p>
 
-<div class="share-cta">
-  Share on <span class="highlight">X / Instagram / LinkedIn</span><br>
-  with <span class="highlight">#MeshyGDC2026 @MeshyAI</span><br>
-  to win our special gift 🎁
+  <div class="caption-box" id="captionBox" onclick="copyCaption()">
+    <div class="caption-text" id="captionText"></div>
+    <span class="copy-label" id="copyLabel">2&#xFE0F;&#x20E3; CLICK TO COPY TEXT</span>
+  </div>
+
+  <p class="share-cta">
+    3&#xFE0F;&#x20E3; Share on <strong>X / Instagram / LinkedIn</strong><br>
+    with <span class="tag">#MeshyGDC @MeshyAI</span><br>
+    to win our special gift &#x1F381;
+  </p>
+
 </div>
 
 <script>
 (function() {
-  var params = new URLSearchParams(window.location.search);
-  var photoUrl  = params.get('photo')  || '';
-  var maskName  = params.get('mask')   || 'AI Mask';
-  var caption   = params.get('caption') || ('I just unlocked ' + maskName + ' \uD83C\uDF89 with @MeshyAI at GDC 2026! #MeshyGDC2026 #MeshyAI');
+  var params  = new URLSearchParams(window.location.search);
+  var photoUrl = params.get('photo')   || '';
+  var maskName = params.get('mask')    || 'AI Mask';
+  var caption  = params.get('caption') || ('I just unlocked ' + maskName + ' \uD83C\uDF89 with @MeshyAI at GDC 2026! #MeshyGDC2026 #MeshyAI');
 
-  // Set OG image
   document.getElementById('og-image').setAttribute('content', photoUrl);
 
-  // Photo
   if (photoUrl) {
     var img = document.getElementById('photoImg');
     img.src = photoUrl;
     img.style.display = 'block';
     document.getElementById('photoPlaceholder').style.display = 'none';
-  } else {
-    document.getElementById('photoPlaceholder').textContent = 'No photo found.';
   }
 
-  // Caption
   document.getElementById('captionText').textContent = caption;
 
-  // Download
-  window._photoUrl = photoUrl;
-  window._caption  = caption;
+  window._caption = caption;
 })();
 
-async function downloadPhoto() {
-  var url = window._photoUrl;
-  if (!url) return;
-  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  if (isIOS) {
-    window.open(url, '_blank');
-    return;
-  }
-  try {
-    var resp = await fetch(url);
-    var blob = await resp.blob();
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'meshy_photo.png';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  } catch(e) {
-    window.open(url, '_blank');
-  }
-}
-
 function copyCaption() {
-  var text = window._caption;
-  var box  = document.getElementById('captionBox');
+  var text  = window._caption;
+  var box   = document.getElementById('captionBox');
   var label = document.getElementById('copyLabel');
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -224,8 +176,7 @@ function copyCaption() {
     } else {
       var ta = document.createElement('textarea');
       ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
+      ta.style.cssText = 'position:fixed;opacity:0;';
       document.body.appendChild(ta);
       ta.focus(); ta.select();
       document.execCommand('copy');
@@ -233,11 +184,11 @@ function copyCaption() {
     }
   } catch(e) {}
   box.classList.add('copied');
-  label.textContent = 'Copied!';
-  setTimeout(function(){
+  label.textContent = '\u2705 Copied!';
+  setTimeout(function() {
     box.classList.remove('copied');
-    label.textContent = 'Click to copy text';
-  }, 2000);
+    label.textContent = '2\uFE0F\u20E3 CLICK TO COPY TEXT';
+  }, 2200);
 }
 </script>
 </body>
