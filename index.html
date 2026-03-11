@@ -4,54 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>MeshyAI Photobooth</title>
-
-<!-- Open Graph for link previews -->
 <meta property="og:title" content="My MeshyAI Photo">
 <meta property="og:description" content="Made with MeshyAI at GDC 2026">
 <meta property="og:image" id="og-image" content="">
 <meta property="og:type" content="website">
-
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
-  min-height: 100vh;
+  height: 100dvh;
   background: radial-gradient(ellipse at 50% 20%, #1e3d20 0%, #0e1f10 45%, #080f09 100%);
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding-bottom: 32px;
 }
 
 /* ── Header ── */
 .header {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 16px 6px;
+  padding: 12px 16px 6px;
+  flex-shrink: 0;
 }
-.header img.icon { height: 30px; width: auto; }
-.header img.logo { height: 22px; width: auto; }
+.header img {
+  height: 20px;
+  width: auto;
+}
 
 /* ── Photo ── */
 .photo-wrap {
-  padding: 10px 16px 0;
+  flex: 1;
+  min-height: 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .photo-wrap img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
   height: auto;
   display: block;
-  border-radius: 14px;
-  background: #111;
+  border-radius: 12px;
+  object-fit: contain;
+  background: transparent;
 }
 .photo-placeholder {
   width: 100%;
   aspect-ratio: 9/16;
+  max-height: 100%;
   background: #111;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,26 +72,26 @@ body {
 
 /* ── Steps ── */
 .steps {
-  padding: 16px 16px 0;
+  flex-shrink: 0;
+  padding: 8px 16px 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
 
 .step-hold {
   text-align: center;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   font-weight: 800;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   color: #fff;
 }
 
-/* ── Copy box ── */
 .caption-box {
   background: rgba(255,255,255,0.07);
   border: 1.5px solid rgba(255,255,255,0.13);
-  border-radius: 18px;
-  padding: 16px 18px 14px;
+  border-radius: 14px;
+  padding: 10px 14px 8px;
   cursor: pointer;
   user-select: none;
   touch-action: manipulation;
@@ -90,37 +101,34 @@ body {
 .caption-box.copied { border-color: rgba(138,223,60,0.5); }
 
 .caption-text {
-  font-size: 0.95rem;
-  line-height: 1.55;
+  font-size: 0.82rem;
+  line-height: 1.45;
   color: #ccc;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .copy-label {
   display: block;
   text-align: center;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   font-weight: 800;
   color: #c8f565;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
-/* ── Share CTA ── */
 .share-cta {
   text-align: center;
-  font-size: 0.95rem;
-  line-height: 1.7;
+  font-size: 0.82rem;
+  line-height: 1.55;
   color: #ddd;
 }
-.share-cta strong { color: #fff; font-weight: 700; }
+.share-cta strong { color: #fff; }
 .share-cta .tag { font-weight: 800; font-style: italic; color: #c8f565; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <img class="icon" src="assets/Meshy_Icon.png" alt=""
-       onerror="this.style.display='none'">
-  <img class="logo" src="assets/logo-Meshy.png" alt="Meshy">
+  <img src="assets/logo-Meshy.png" alt="Meshy">
 </div>
 
 <div class="photo-wrap">
@@ -139,15 +147,14 @@ body {
 
   <p class="share-cta">
     3&#xFE0F;&#x20E3; Share on <strong>X / Instagram / LinkedIn</strong><br>
-    with <span class="tag">#MeshyGDC @MeshyAI</span><br>
-    to win our special gift &#x1F381;
+    with <span class="tag">#MeshyGDC @MeshyAI</span> to win our special gift &#x1F381;
   </p>
 
 </div>
 
 <script>
 (function() {
-  var params  = new URLSearchParams(window.location.search);
+  var params   = new URLSearchParams(window.location.search);
   var photoUrl = params.get('photo')   || '';
   var maskName = params.get('mask')    || 'AI Mask';
   var caption  = params.get('caption') || ('I just unlocked ' + maskName + ' \uD83C\uDF89 with @MeshyAI at GDC 2026! #MeshyGDC2026 #MeshyAI');
@@ -162,20 +169,18 @@ body {
   }
 
   document.getElementById('captionText').textContent = caption;
-
   window._caption = caption;
 })();
 
 function copyCaption() {
-  var text  = window._caption;
   var box   = document.getElementById('captionBox');
   var label = document.getElementById('copyLabel');
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(window._caption);
     } else {
       var ta = document.createElement('textarea');
-      ta.value = text;
+      ta.value = window._caption;
       ta.style.cssText = 'position:fixed;opacity:0;';
       document.body.appendChild(ta);
       ta.focus(); ta.select();
